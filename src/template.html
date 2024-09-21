@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+      integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Todo List App</title>
+  </head>
+  <body>
+    <header>
+      <h2 class="site-title">Todo List App</h2>
+    </header>
+    <aside>
+      <h3>Todo List</h3>
+      <div class="aside-btns">
+        <button type="button" class="active" id="today-btn">
+          <i class="fa-solid fa-calendar-day"></i> Today
+        </button>
+        <button type="button" id="upcoming-btn">
+          <i class="fa-solid fa-clock"></i> Upcoming
+        </button>
+        <button type="button" id="all-btn">
+          <i class="fa-solid fa-calendar-days"></i> All
+        </button>
+      </div>
+      <h3>Projects</h3>
+      <div id="projects-list">
+        <button type="button">
+          <i class="fa-solid fa-diagram-project"></i> Family
+        </button>
+        <button type="button">
+          <i class="fa-solid fa-diagram-project"></i> Gym
+        </button>
+        <button type="button">
+          <i class="fa-solid fa-diagram-project"></i> Learning
+        </button>
+      </div>
+      <button type="button" class="add-project-btn">+ Add Project</button>
+    </aside>
+
+    <main id="content">
+      <h1 class="heading">Today</h1>
+    </main>
+
+    <!-- Dialog box for project creation form -->
+    <dialog id="project-form-dialog">
+      <h2>Create New Project</h2>
+      <form id="project-form">
+        <input
+          type="text"
+          name="title"
+          id="title"
+          placeholder="Project Title..."
+          autocomplete="off"
+          required
+        />
+        <input
+          type="text"
+          name="description"
+          id="description"
+          placeholder="Project Description..."
+          autocomplete="off"
+          required
+        />
+        <button type="submit">Create Project</button>
+      </form>
+      <button type="button" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </dialog>
+
+    <!-- Dialog box for todo creation form -->
+    <dialog id="todo-form-dialog">
+      <h2>Create Todo</h2>
+      <form id="todo-form">
+        <input
+          type="text"
+          name="title"
+          id="title"
+          placeholder="Todo Title..."
+          autocomplete="off"
+          required
+        />
+        <input
+          type="text"
+          name="description"
+          id="description"
+          placeholder="Todo Description..."
+          autocomplete="off"
+          required
+        />
+        <p>Priority</p>
+        <div class="radio-div">
+          <div>
+            <input type="radio" name="priority" id="low" value="0" required />
+            <label for="low" id="low-priority-label">Low</label>
+          </div>
+          <div>
+            <input type="radio" name="priority" id="medium" value="1" required/>
+            <label for="medium" id="medium-priority-label">Medium</label>
+          </div>
+          <div>
+            <input type="radio" name="priority" id="high" value="2" required />
+            <label for="high" id="high-priority-label">High</label>
+          </div>
+        </div>
+
+        <label for="due-date" id="due-date-label">Due Date</label>
+        <input type="date" name="due-date" id="due-date" required />
+        <button type="submit">Create Todo</button>
+      </form>
+      <button type="button" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </dialog>
+  </body>
+</html>
