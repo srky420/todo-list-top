@@ -157,34 +157,119 @@ class DOM {
     todos.forEach((todo) => {
       this.#contentBox.appendChild(this.#createDivForATodo(todo));
     });
+    console.log(todos);
   }
 
   // Render a single todo
   #createDivForATodo(todo) {
     const div = document.createElement("div");
     div.classList.add("todo");
-    const label = document.createElement("label");
-    label.addEventListener("click", () => {
-      todo.done = true;
-      label.querySelector("input").checked = true;
-      label.querySelector("input").disabled = true;
-      setTimeout(() => div.classList.add("removed-todo"), 250);
+
+    const input = document.createElement("input");
+    input.setAttribute("type", "checkbox");
+    if (todo.done) input.setAttribute("checked", true);
+    input.addEventListener("click", () => {
+      todo.done = !todo.done;
     });
-    label.innerHTML = `
-      <input type="checkbox" name="done" ${todo.done && "checked disabled"}>
-      <div class="todo-inner"> 
-        <p class="name">${todo.name}</p>
+
+    const todoInner = document.createElement("div");
+    todoInner.classList.add("todo-inner");
+    todoInner.innerHTML = `
+      <p class="name">${todo.name}</p>
         <p>
-          <small class="date">Due <i class="fa-solid fa-clock-rotate-left"></i> ${isToday(todo.dueDate) ? "Today" : todo.dueDate.toDateString()}</small> 
+          <small class="date">
+            Due <i class="fa-solid fa-clock-rotate-left"></i> ${isToday(todo.dueDate) ? "Today" : todo.dueDate.toDateString()}
+          </small> 
           <small class="project">${
             todo.projectName && "For " + todo.projectName
           }</small>
-        </p>
-      </div>`;
-    div.appendChild(label);
+      </p>
+    `;
+    div.innerHTML += `
+      <dialog class="details-dialog">
+        <h3 class="name">${todo.name}</h3>
+        <p>${todo.description}</p>
+        <p>Due Date: ${todo.dueDate.toDateString()}</p>
+        <button type="button" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </dialog>`;
+
+    const openModalBtn = document.createElement("button");
+    openModalBtn.addEventListener("click", (e) => {
+      div.querySelector(".details-dialog").showModal();
+    });
+    openModalBtn.innerHTML = `<i class="fa-solid fa-circle-info"></i>`;
+    openModalBtn.classList.add("todo-inner-btn");
+
+    div.innerHTML += `
+      <dialog class="edit-dialog">
+        <h2>Edit Todo</h2>
+        <form>
+          <input
+            type="text"
+            name="title"
+            id="title"
+            placeholder="Todo Title..."
+            autocomplete="off"
+            value="${todo.name}"
+            required
+          />
+          <input
+            type="text"
+            name="description"
+            id="description"
+            placeholder="Todo Description..."
+            autocomplete="off"
+            value="${todo.description}"
+            required
+          />
+          <p>Priority</p>
+          <div class="radio-div">
+            <div>
+              <input type="radio" name="priority" id="low" value="0" ${todo.priority === 0 && "checked"} required />
+              <label for="low" id="low-priority-label">Low</label>
+            </div>
+            <div>
+              <input type="radio" name="priority" id="medium" value="1" ${todo.priority === 1 && "checked"} required/>
+              <label for="medium" id="medium-priority-label">Medium</label>
+            </div>
+            <div>
+              <input type="radio" name="priority" id="high" value="2" ${todo.priority === 2 && "checked"} required />
+              <label for="high" id="high-priority-label">High</label>
+            </div>
+          </div>
+
+          <label for="due-date" id="due-date-label">Due Date</label>
+          <input type="date" name="due-date" id="due-date" required />
+          <button type="submit">Edit Todo</button>
+        </form>
+        <button type="button" class="close">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </dialog>
+    `;
+    
+    const editBtn = document.createElement("button");
+    editBtn.classList.add("todo-inner-btn");
+    editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
+    editBtn.addEventListener("click", (e) => {
+      div.querySelector(".edit-dialog").showModal();
+    });
+
+    div.appendChild(input);
+    div.appendChild(todoInner);
+    div.appendChild(editBtn);
+    div.appendChild(openModalBtn);
     div.classList.add(
       todo.priority === 0 ? "low" : todo.priority === 1 ? "medium" : "high"
     );
+
+    div.querySelectorAll("dialog .close")
+      .forEach(btn => btn.addEventListener("click", (e) => {
+        e.currentTarget.parentNode.close();
+      }));
+
     return div;
   }
 

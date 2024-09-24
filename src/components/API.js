@@ -32,17 +32,17 @@ class API {
 
   // Get all projects and todos which have today as due date
   getTodosOfToday() {
-    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => isToday(todo.dueDate) && !todo.done))
+    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => isToday(todo.dueDate)))
   }
 
   // Get all projects and todos which are upcoming
   getUpcomingTodos() {
-    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => isAfter(todo.dueDate, new Date()) && !todo.done))
+    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => isAfter(todo.dueDate, new Date())))
   }
 
   // Get all projects from Storage
   getAllTodos() {
-    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => !todo.done));
+    return Storage.getAllProjects().flatMap(project => project.todos);
   }
 
   // Get all todos of a certain project
