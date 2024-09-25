@@ -119,5 +119,75 @@
         <i class="fa-solid fa-xmark"></i>
       </button>
     </dialog>
+
+    <!-- Dialog box for todo edit form -->
+    <dialog id="edit-form-dialog">
+      <h2>Edit Todo</h2>
+      <form id="edit-form">
+        <input
+          type="text"
+          name="title"
+          id="title"
+          placeholder="Todo Title..."
+          autocomplete="off"
+          required
+        />
+        <input
+          type="text"
+          name="description"
+          id="description"
+          placeholder="Todo Description..."
+          autocomplete="off"
+          required
+        />
+        <p>Priority</p>
+        <div class="radio-div">
+          <div>
+            <input type="radio" name="edit-priority" id="edit-low" value="0" required />
+            <label for="edit-low" id="low-priority-label">Low</label>
+          </div>
+          <div>
+            <input type="radio" name="edit-priority" id="edit-medium" value="1" required/>
+            <label for="edit-medium" id="medium-priority-label">Medium</label>
+          </div>
+          <div>
+            <input type="radio" name="edit-priority" id="edit-high" value="2" required />
+            <label for="edit-high" id="high-priority-label">High</label>
+          </div>
+        </div>
+        <label for="due-date" id="due-date-label">Due Date</label>
+        <input type="date" name="due-date" id="due-date" required />
+        <button type="submit">Edit Todo</button>
+      </form>
+      <button type="button" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </dialog>
+
+    <!-- Todo details dialog -->
+    <dialog id="details-dialog">
+      <h3 class="name"><span id="todo-name"></span></h3>
+      <hr>
+      <p><span id="todo-desc"></span></p>
+      <p>Due Date: <span id="todo-due-date"></span></p>
+      <h3>Priority</h3>
+      <div class="radio-div">
+        <div>
+          <input type="radio" name="details-priority" id="details-low" value="0" disabled />
+          <label for="details-low" id="low-priority-label">Low</label>
+        </div>
+        <div>
+          <input type="radio" name="details-priority" id="details-medium" value="1" disabled/>
+          <label for="details-medium" id="medium-priority-label">Medium</label>
+        </div>
+        <div>
+          <input type="radio" name="details-priority" id="details-high" value="2" disabled />
+          <label for="details-high" id="high-priority-label">High</label>
+        </div>
+      </div>
+      <button type="button" class="close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </dialog>
   </body>
 </html>

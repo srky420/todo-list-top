@@ -5,6 +5,8 @@ class DOM {
   // Fields to store DOM elements
   #dialogElemProject;
   #dialogElemTodo;
+  #dialogElemEdit;
+  #dialogDetails;
   #todayBtn;
   #upcomingBtn;
   #allBtn;
@@ -13,8 +15,10 @@ class DOM {
   #projectsList;
   #projectForm;
   #todoForm;
+  #editForm;
   #projectIndex;
   #tabName;
+  #selectedTodo;
 
   constructor() {
     this.#cacheDom();
@@ -25,6 +29,8 @@ class DOM {
   #cacheDom() {
     this.#dialogElemProject = document.querySelector("#project-form-dialog");
     this.#dialogElemTodo = document.querySelector("#todo-form-dialog");
+    this.#dialogElemEdit = document.querySelector("#edit-form-dialog");
+    this.#dialogDetails = document.querySelector("#details-dialog");
     this.#todayBtn = document.querySelector("#today-btn");
     this.#upcomingBtn = document.querySelector("#upcoming-btn");
     this.#allBtn = document.querySelector("#all-btn");
@@ -33,6 +39,7 @@ class DOM {
     this.#projectsList = document.querySelector("#projects-list");
     this.#projectForm = document.querySelector("#project-form");
     this.#todoForm = document.querySelector("#todo-form");
+    this.#editForm = document.querySelector("#edit-form");
   }
 
   // Add event listeners to DOM elements
@@ -44,9 +51,15 @@ class DOM {
     this.#dialogElemProject.querySelector(".close").addEventListener("click", () =>
       this.#dialogElemProject.close()
     );
-    this.#dialogElemTodo.querySelector(".close").addEventListener("click", () =>
-      this.#dialogElemTodo.close()
-    );
+    this.#dialogElemTodo.querySelector(".close").addEventListener("click", () => {
+      this.#dialogElemTodo.close();
+    });
+    this.#dialogElemEdit.querySelector(".close").addEventListener("click", () => {
+      this.#dialogElemEdit.close();
+    });
+    this.#dialogDetails.querySelector(".close").addEventListener("click", () => {
+      this.#dialogDetails.close();
+    });
 
     // Today btn event
     this.#todayBtn.addEventListener("click", (e) => {
@@ -80,23 +93,10 @@ class DOM {
     });
 
     // Todo creation form submission event
-    this.#todoForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-      const formData = new FormData(e.currentTarget);
-      const project = API.getProjectByIndex(this.#projectIndex);
-      this.#todoForm
-        .querySelectorAll("input:not([type='radio'])")
-        .forEach((input) => (input.value = ""));
-      const todo = API.createTodo(
-        formData.get("title"),
-        formData.get("description"),
-        formData.get("due-date"),
-        parseInt(formData.get("priority")),
-        project
-      );
-      this.#renderTab(this.#tabName, this.#projectIndex);
-      this.#dialogElemTodo.close();
-    });
+    this.#todoForm.addEventListener("submit", (e) => this.#todoFormSubmission(e));
+
+    // Todo edit form submission event
+    this.#editForm.addEventListener("submit", (e) => this.#editFormSubmission(e));
   }
 
   // Custom methods
@@ -127,7 +127,7 @@ class DOM {
 
   // Render todos list
   #renderTodos(tabName, todos) {
-    this.#contentBox.innerHTML = `<h1>${tabName}</h1>`;
+    this.#contentBox.innerHTML = `<h1 class="heading">${tabName}</h1>`;
 
     // Add to do button and its event listener
     const button = document.createElement("button");
@@ -139,11 +139,7 @@ class DOM {
       const dueDateInput = this.#dialogElemTodo.querySelector("#due-date");
       const dueDateLabel = this.#dialogElemTodo.querySelector("#due-date-label");
       if (tabName === "Today") {
-        let now = new Date();
-        let day = ("0" + now.getDate()).slice(-2);
-        let month = ("0" + (now.getMonth() + 1)).slice(-2);
-        let today = now.getFullYear() + "-" + month + "-" + day;
-        dueDateInput.value = today;
+        dueDateInput.value = this.#getInputDate();
         dueDateInput.style.display = "none";
         dueDateLabel.style.display = "none";
       }
@@ -180,87 +176,49 @@ class DOM {
           <small class="date">
             Due <i class="fa-solid fa-clock-rotate-left"></i> ${isToday(todo.dueDate) ? "Today" : todo.dueDate.toDateString()}
           </small> 
-          <small class="project">${
+          ${this.#projectIndex === 0 ?
+          `<small class="project">${
             todo.projectName && "For " + todo.projectName
-          }</small>
+          }</small>`
+          :
+          ``
+          }
       </p>
-    `;
-    div.innerHTML += `
-      <dialog class="details-dialog">
-        <h3 class="name">${todo.name}</h3>
-        <p>${todo.description}</p>
-        <p>Due Date: ${todo.dueDate.toDateString()}</p>
-        <button type="button" class="close">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </dialog>`;
+    `;      
 
-    const openModalBtn = document.createElement("button");
-    openModalBtn.addEventListener("click", (e) => {
-      div.querySelector(".details-dialog").showModal();
+    // Todo details btn and click event listener
+    const detailsBtn = document.createElement("button");
+    detailsBtn.addEventListener("click", (e) => {
+      this.#dialogDetails.showModal();
+      this.#dialogDetails.querySelector("#todo-name").innerText = todo.name;
+      this.#dialogDetails.querySelector("#todo-desc").innerText = todo.description;
+      this.#dialogDetails.querySelectorAll("input[name='details-priority']").forEach(box => {
+        if (todo.priority == box.value) box.checked = true;
+      });      
+      this.#dialogDetails.querySelector("#todo-due-date").innerText = todo.dueDate.toDateString();
     });
-    openModalBtn.innerHTML = `<i class="fa-solid fa-circle-info"></i>`;
-    openModalBtn.classList.add("todo-inner-btn");
-
-    div.innerHTML += `
-      <dialog class="edit-dialog">
-        <h2>Edit Todo</h2>
-        <form>
-          <input
-            type="text"
-            name="title"
-            id="title"
-            placeholder="Todo Title..."
-            autocomplete="off"
-            value="${todo.name}"
-            required
-          />
-          <input
-            type="text"
-            name="description"
-            id="description"
-            placeholder="Todo Description..."
-            autocomplete="off"
-            value="${todo.description}"
-            required
-          />
-          <p>Priority</p>
-          <div class="radio-div">
-            <div>
-              <input type="radio" name="priority" id="low" value="0" ${todo.priority === 0 && "checked"} required />
-              <label for="low" id="low-priority-label">Low</label>
-            </div>
-            <div>
-              <input type="radio" name="priority" id="medium" value="1" ${todo.priority === 1 && "checked"} required/>
-              <label for="medium" id="medium-priority-label">Medium</label>
-            </div>
-            <div>
-              <input type="radio" name="priority" id="high" value="2" ${todo.priority === 2 && "checked"} required />
-              <label for="high" id="high-priority-label">High</label>
-            </div>
-          </div>
-
-          <label for="due-date" id="due-date-label">Due Date</label>
-          <input type="date" name="due-date" id="due-date" required />
-          <button type="submit">Edit Todo</button>
-        </form>
-        <button type="button" class="close">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </dialog>
-    `;
+    detailsBtn.innerHTML = `<i class="fa-solid fa-circle-info"></i>`;
+    detailsBtn.classList.add("todo-inner-btn");
     
+    // Todo edit btn and click event listener
     const editBtn = document.createElement("button");
     editBtn.classList.add("todo-inner-btn");
     editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
     editBtn.addEventListener("click", (e) => {
-      div.querySelector(".edit-dialog").showModal();
+      this.#dialogElemEdit.showModal();
+      this.#editForm.querySelector("#title").value = todo.name;
+      this.#editForm.querySelector("#description").value = todo.description;
+      this.#editForm.querySelectorAll("input[name='edit-priority']").forEach(box => {
+        if (todo.priority == box.value) box.checked = true;
+      });
+      this.#editForm.querySelector("#due-date").value = this.#getInputDate(todo.dueDate);
+      this.#selectedTodo = todo;
     });
 
     div.appendChild(input);
     div.appendChild(todoInner);
     div.appendChild(editBtn);
-    div.appendChild(openModalBtn);
+    div.appendChild(detailsBtn);
     div.classList.add(
       todo.priority === 0 ? "low" : todo.priority === 1 ? "medium" : "high"
     );
@@ -269,7 +227,6 @@ class DOM {
       .forEach(btn => btn.addEventListener("click", (e) => {
         e.currentTarget.parentNode.close();
       }));
-
     return div;
   }
 
@@ -292,11 +249,53 @@ class DOM {
     });
   }
 
+  #getInputDate(date = new Date()) {
+    let day = ("0" + date.getDate()).slice(-2);
+    let month = ("0" + (date.getMonth() + 1)).slice(-2);
+    let today = date.getFullYear() + "-" + month + "-" + day;
+    return today;
+  }
+
+  // Todo creation form submission logic
+  #todoFormSubmission(e) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const project = API.getProjectByIndex(this.#projectIndex);
+    e.currentTarget
+      .querySelectorAll("input:not([type='radio'])")
+      .forEach((input) => (input.value = ""));
+    const todo = API.createTodo(
+      formData.get("title"),
+      formData.get("description"),
+      formData.get("due-date"),
+      parseInt(formData.get("priority")),
+      project
+    );
+    this.#renderTab(this.#tabName, this.#projectIndex);
+    this.#dialogElemTodo.close();
+  }
+
+  // Todo edit form submission logic
+  #editFormSubmission(e) {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    e.currentTarget
+      .querySelectorAll("input:not([type='radio'])")
+      .forEach((input) => (input.value = ""));
+    
+    this.#selectedTodo.name = formData.get("title");
+    this.#selectedTodo.description = formData.get("description");
+    this.#selectedTodo.dueDate = new Date(formData.get("due-date"));
+    this.#selectedTodo.priority = parseInt(formData.get("edit-priority"));
+
+    this.#renderTab(this.#tabName, this.#projectIndex);
+    this.#dialogElemEdit.close();
+  }
+
   initialRender() {
     this.#renderTab("Today", 0);
     this.#renderProjects(API.getAllProjects());
   }
-
 }
 
 export default new DOM();

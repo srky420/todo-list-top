@@ -269,8 +269,9 @@ main {
   position: relative;
 }
 
-main h1 {
+main > h1 {
   border-bottom: 2px solid var(--grey);
+  padding-bottom: 1rem;
 }
 
 /* Todo styles */
