@@ -329,6 +329,12 @@ main > h1 {
   cursor: pointer;
 }
 
+.delete-btn:hover {
+  background-color: var(--darkred);
+  color: white;
+  cursor: pointer;
+}
+
 .add-todo-btn {
   background-color: var(--darkgrey);
   color: white;

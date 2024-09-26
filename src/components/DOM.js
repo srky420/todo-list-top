@@ -176,17 +176,17 @@ class DOM {
           <small class="date">
             Due <i class="fa-solid fa-clock-rotate-left"></i> ${isToday(todo.dueDate) ? "Today" : todo.dueDate.toDateString()}
           </small> 
-          ${this.#projectIndex === 0 ?
-          `<small class="project">${
-            todo.projectName && "For " + todo.projectName
-          }</small>`
+          ${this.#projectIndex === 0 && todo.projectName ?
+          `<small class="project">
+             For ${todo.projectName}
+          </small>`
           :
-          ``
+          ''
           }
       </p>
-    `;      
+    `;
 
-    // Todo details btn and click event listener
+    // Todo details btn and its click event listener
     const detailsBtn = document.createElement("button");
     detailsBtn.addEventListener("click", (e) => {
       this.#dialogDetails.showModal();
@@ -200,7 +200,7 @@ class DOM {
     detailsBtn.innerHTML = `<i class="fa-solid fa-circle-info"></i>`;
     detailsBtn.classList.add("todo-inner-btn");
     
-    // Todo edit btn and click event listener
+    // Todo edit btn and its click event listener
     const editBtn = document.createElement("button");
     editBtn.classList.add("todo-inner-btn");
     editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square"></i>`;
@@ -215,10 +215,20 @@ class DOM {
       this.#selectedTodo = todo;
     });
 
+    // Delete todo btn and its click event listener
+    const deleteBtn = document.createElement("button");
+    deleteBtn.classList.add("todo-inner-btn", "delete-btn");
+    deleteBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
+    deleteBtn.addEventListener("click", (e) => {
+      API.deleteTodo(todo.projectIndex, todo.id);
+      this.#renderTab(this.#tabName, this.#projectIndex);
+    });
+
     div.appendChild(input);
     div.appendChild(todoInner);
     div.appendChild(editBtn);
     div.appendChild(detailsBtn);
+    div.appendChild(deleteBtn);
     div.classList.add(
       todo.priority === 0 ? "low" : todo.priority === 1 ? "medium" : "high"
     );

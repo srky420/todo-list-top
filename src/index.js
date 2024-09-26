@@ -12,4 +12,5 @@ import "./styles.css";
   const home = API.createProject("Home", "Home chores", new Date());
   API.createTodo("Do dishes", "Do dishes", new Date(), 1, home);
   DOM.initialRender();
+  console.log(API.getAllProjects());
 })();

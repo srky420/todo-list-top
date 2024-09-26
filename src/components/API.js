@@ -12,7 +12,13 @@ class API {
 
   // Create new todo for a certain project
   createTodo(name, description, dueDate, priority, project) {
-    return project.addTodo(name, description, new Date(dueDate), priority);
+    const index = Storage.getAllProjects().findIndex(_project => _project === project);
+    return project.addTodo(name, description, new Date(dueDate), priority, index);
+  }
+
+  // Remove todo from a project
+  deleteTodo(projectIndex, todoId) {
+    this.getProjectByIndex(projectIndex).deleteTodo(todoId);
   }
 
   // Toggle done flag of a todo of a certain project
