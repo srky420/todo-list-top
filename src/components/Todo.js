@@ -12,12 +12,6 @@ class Todo {
     this.projectIndex = projectIndex;
     this.notes = notes === "" ? "" : notes;
   }
-  toggleDone() {
-    this.done = !this.done;
-  }
-  changePriority(newPriority) {
-    this.priority = newPriority;
-  }
 }
 
 export default Todo;

@@ -1,5 +1,6 @@
 class Storage {
   #projects = [];
+
   addProject(project) {
     this.#projects = [...this.#projects, project];
   }
@@ -8,6 +9,9 @@ class Storage {
   }
   getAllProjects() {
     return this.#projects;
+  }
+  store() {
+    localStorage.setItem("projects", JSON.stringify(this.#projects));
   }
 }
 

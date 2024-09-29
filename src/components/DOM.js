@@ -150,22 +150,29 @@ class DOM {
       }
     });
     this.#contentBox.appendChild(button);
-    todos.forEach((todo) => {
-      this.#contentBox.appendChild(this.#createDivForATodo(todo));
-    });
-    console.log(todos);
+    if (todos.length === 0) {
+      const p = document.createElement("p");
+      p.innerHTML += `<p class="empty">No Todos Yet.</p>`;
+      this.#contentBox.appendChild(p);
+    }
+    else {
+      todos.forEach((todo) => {
+        this.#contentBox.appendChild(this.#createDivForATodo(todo));
+      });
+    }
   }
 
   // Render a single todo
   #createDivForATodo(todo) {
     const div = document.createElement("div");
     div.classList.add("todo");
+    const dueDate = new Date(todo.dueDate);
 
     const input = document.createElement("input");
     input.setAttribute("type", "checkbox");
     if (todo.done) input.setAttribute("checked", true);
     input.addEventListener("click", () => {
-      todo.done = !todo.done;
+      API.toggleDoneForTodo(todo);
     });
 
     const todoInner = document.createElement("div");
@@ -174,7 +181,7 @@ class DOM {
       <p class="name">${todo.name}</p>
         <p>
           <small class="date">
-            Due <i class="fa-solid fa-clock-rotate-left"></i> ${isToday(todo.dueDate) ? "Today" : todo.dueDate.toDateString()}
+            Due <i class="fa-solid fa-clock-rotate-left"></i> ${isToday(dueDate) ? "Today" : dueDate.toDateString()}
           </small> 
           ${this.#projectIndex === 0 && todo.projectName ?
           `<small class="project">
@@ -195,7 +202,7 @@ class DOM {
       this.#dialogDetails.querySelectorAll("input[name='details-priority']").forEach(box => {
         if (todo.priority == box.value) box.checked = true;
       });      
-      this.#dialogDetails.querySelector("#todo-due-date").innerText = todo.dueDate.toDateString();
+      this.#dialogDetails.querySelector("#todo-due-date").innerText = dueDate.toDateString();
     });
     detailsBtn.innerHTML = `<i class="fa-solid fa-circle-info"></i>`;
     detailsBtn.classList.add("todo-inner-btn");
@@ -211,7 +218,7 @@ class DOM {
       this.#editForm.querySelectorAll("input[name='edit-priority']").forEach(box => {
         if (todo.priority == box.value) box.checked = true;
       });
-      this.#editForm.querySelector("#due-date").value = this.#getInputDate(todo.dueDate);
+      this.#editForm.querySelector("#due-date").value = this.#getInputDate(dueDate);
       this.#selectedTodo = todo;
     });
 
@@ -240,7 +247,7 @@ class DOM {
     return div;
   }
 
-  // Render projects list
+  // Render projects list in sidebar
   #renderProjects(projects) {
     this.#projectsList.innerHTML = "";
     if (projects.length === 1) {
@@ -300,6 +307,7 @@ class DOM {
 
     this.#renderTab(this.#tabName, this.#projectIndex);
     this.#dialogElemEdit.close();
+    API.saveProjects();
   }
 
   initialRender() {

@@ -3,29 +3,35 @@ import Project from "./Project";
 import Storage from "./Storage";
 
 class API {
+
   // Create a new project
-  createProject(name, description) {
-    const project = new Project(name, description);
+  createProject(name, description, todos = []) {
+    const project = new Project(name, description, todos);
     Storage.addProject(project);
+    Storage.store();
     return project;
   }
 
   // Create new todo for a certain project
   createTodo(name, description, dueDate, priority, project) {
     const index = Storage.getAllProjects().findIndex(_project => _project === project);
-    return project.addTodo(name, description, new Date(dueDate), priority, index);
+    const todo = project.addTodo(name, description, new Date(dueDate), priority, index);
+    Storage.store();
+    return todo;
   }
 
   // Remove todo from a project
   deleteTodo(projectIndex, todoId) {
     this.getProjectByIndex(projectIndex).deleteTodo(todoId);
+    Storage.store();
   }
 
-  // Toggle done flag of a todo of a certain project
-  toggleTodoOfProject(project, index) {
-    project.toggleDone(index);
+  // Toggle done for todo
+  toggleDoneForTodo(todo) {
+    todo.done = !todo.done;
+    Storage.store();
   }
-
+  
   // Get project by index
   getProjectByIndex(index) {
     return Storage.getAllProjects()[index];
@@ -38,12 +44,12 @@ class API {
 
   // Get all projects and todos which have today as due date
   getTodosOfToday() {
-    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => isToday(todo.dueDate)))
+    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => isToday(new Date(todo.dueDate))))
   }
 
   // Get all projects and todos which are upcoming
   getUpcomingTodos() {
-    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => isAfter(todo.dueDate, new Date())))
+    return Storage.getAllProjects().flatMap(project => project.todos.filter(todo => isAfter(new Date(todo.dueDate), new Date())))
   }
 
   // Get all projects from Storage
@@ -54,6 +60,11 @@ class API {
   // Get all todos of a certain project
   getTodosOfProject(project) {
     return project.getTodos();
+  }
+
+  // Store the projects in Local Storage
+  saveProjects() {
+    Storage.store();
   }
 }
 
