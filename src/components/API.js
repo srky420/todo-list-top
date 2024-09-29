@@ -66,6 +66,12 @@ class API {
   saveProjects() {
     Storage.store();
   }
+
+  // Delete project
+  deleteProject(index) {
+    Storage.deleteProject(index);
+    Storage.store();
+  }
 }
 
 export default new API();

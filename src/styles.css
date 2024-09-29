@@ -144,6 +144,12 @@ aside div button {
   gap: 1rem;
 }
 
+aside div button p {
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+}
+
 .add-project-btn {
   margin-top: auto;
   background-color: var(--darkred);
@@ -165,6 +171,22 @@ aside div button:hover {
   background-color: var(--darkblue);
   color: white;
 }
+
+.delete-project-btn {
+  display: none;
+  padding: 0;
+  background-color: transparent;
+  color: white;
+  margin-left: auto;
+}
+
+.delete-project-btn:hover {
+  color: var(--darkred);
+}
+
+.active > .delete-project-btn {
+  display: block;
+} 
 
 /* Dialog modal styles */
 dialog > * {
@@ -272,6 +294,9 @@ main {
 main > h1 {
   border-bottom: 2px solid var(--grey);
   padding-bottom: 1rem;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Todo styles */

@@ -260,17 +260,19 @@ class DOM {
           this.#renderTab(project.name, index);
           this.#switchActiveBtn(e.currentTarget);
         });
-        button.innerHTML = `<i class="fa-solid fa-diagram-project"></i> ${project.name}`;
+        button.innerHTML = `<i class="fa-solid fa-diagram-project"></i> <p>${project.name}<p>`;
+        const deleteBtn = document.createElement("button");
+        deleteBtn.classList.add("delete-project-btn");
+        deleteBtn.addEventListener("click", (e) => {
+          API.deleteProject(index);
+          this.initialRender();
+          e.stopPropagation();
+        });
+        deleteBtn.innerHTML = `<i class="fa-solid fa-trash-can"></i>`;
+        button.appendChild(deleteBtn);
         this.#projectsList.append(button);
       }
     });
-  }
-
-  #getInputDate(date = new Date()) {
-    let day = ("0" + date.getDate()).slice(-2);
-    let month = ("0" + (date.getMonth() + 1)).slice(-2);
-    let today = date.getFullYear() + "-" + month + "-" + day;
-    return today;
   }
 
   // Todo creation form submission logic
@@ -310,9 +312,26 @@ class DOM {
     API.saveProjects();
   }
 
+  // Utility functions
+  #getInputDate(date = new Date()) {
+    let day = ("0" + date.getDate()).slice(-2);
+    let month = ("0" + (date.getMonth() + 1)).slice(-2);
+    let today = date.getFullYear() + "-" + month + "-" + day;
+    return today;
+  }
+
+  #setMinDateValueToToday() {
+    const today = this.#getInputDate();
+    document.querySelectorAll("input[type='date']").forEach(input => {
+      input.setAttribute("min", today);
+    });
+  }
+
   initialRender() {
     this.#renderTab("Today", 0);
     this.#renderProjects(API.getAllProjects());
+    this.#switchActiveBtn(this.#todayBtn);
+    this.#setMinDateValueToToday();
   }
 }
 
