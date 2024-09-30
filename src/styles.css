@@ -132,6 +132,10 @@ input[type="radio"]:checked ~ label {
   outline: 2px solid black;
 }
 
+.hidden {
+  display: none;
+}
+
 /* Header styles */
 header {
   position: relative;
@@ -483,6 +487,8 @@ main > h1 {
   aside {
     position: fixed;
     min-height: 100vh;
+    top: 0;
+    bottom: 0;
     width: 16rem;
     z-index: 9;
     left: -100%;
