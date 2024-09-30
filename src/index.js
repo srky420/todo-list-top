@@ -1,5 +1,6 @@
 import API from "./components/API";
 import DOM from "./components/DOM";
+import Sidebar from "./components/Sidebar";
 import "./index.css";
 import "./styles.css";
 
@@ -23,3 +24,5 @@ import "./styles.css";
     console.log(API.getAllProjects());
   }
 })();
+
+Sidebar.init();

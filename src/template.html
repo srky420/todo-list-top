@@ -15,6 +15,9 @@
   <body>
     <header>
       <h2 class="site-title">Todo List App</h2>
+      <button class="aside-open-btn">
+        <i class="fa-solid fa-bars"></i>
+      </button>
     </header>
     <aside>
       <h3>Todo List</h3>
@@ -29,7 +32,10 @@
           <i class="fa-solid fa-calendar-days"></i> All
         </button>
       </div>
-      <h3>Projects</h3>
+      <div class="projects-list-header">
+        <h3>Projects</h3>
+        <button type="button" class="add-project-btn">+</button>
+      </div>
       <div id="projects-list">
         <button type="button">
           <i class="fa-solid fa-diagram-project"></i> Family
@@ -41,12 +47,17 @@
           <i class="fa-solid fa-diagram-project"></i> Learning
         </button>
       </div>
-      <button type="button" class="add-project-btn">+ Add Project</button>
     </aside>
 
+    <!-- Main content i.e. Todo lists -->
     <main id="content">
       <h1 class="heading">Today</h1>
     </main>
+
+    <!-- Footer -->
+    <footer>
+      <p>Copyright &copy; 2024, Todo List App by <a href="https://github.com/srky420">Shahrukh Khan</a></p>
+    </footer>
 
     <!-- Dialog box for project creation form -->
     <dialog id="project-form-dialog">
@@ -102,7 +113,13 @@
             <label for="low" id="low-priority-label">Low</label>
           </div>
           <div>
-            <input type="radio" name="priority" id="medium" value="1" required/>
+            <input
+              type="radio"
+              name="priority"
+              id="medium"
+              value="1"
+              required
+            />
             <label for="medium" id="medium-priority-label">Medium</label>
           </div>
           <div>
@@ -143,15 +160,33 @@
         <p>Priority</p>
         <div class="radio-div">
           <div>
-            <input type="radio" name="edit-priority" id="edit-low" value="0" required />
+            <input
+              type="radio"
+              name="edit-priority"
+              id="edit-low"
+              value="0"
+              required
+            />
             <label for="edit-low" id="low-priority-label">Low</label>
           </div>
           <div>
-            <input type="radio" name="edit-priority" id="edit-medium" value="1" required/>
+            <input
+              type="radio"
+              name="edit-priority"
+              id="edit-medium"
+              value="1"
+              required
+            />
             <label for="edit-medium" id="medium-priority-label">Medium</label>
           </div>
           <div>
-            <input type="radio" name="edit-priority" id="edit-high" value="2" required />
+            <input
+              type="radio"
+              name="edit-priority"
+              id="edit-high"
+              value="2"
+              required
+            />
             <label for="edit-high" id="high-priority-label">High</label>
           </div>
         </div>
@@ -167,21 +202,39 @@
     <!-- Todo details dialog -->
     <dialog id="details-dialog">
       <h3 class="name"><span id="todo-name"></span></h3>
-      <hr>
+      <hr />
       <p><span id="todo-desc"></span></p>
       <p>Due Date: <span id="todo-due-date"></span></p>
       <h3>Priority</h3>
       <div class="radio-div">
         <div>
-          <input type="radio" name="details-priority" id="details-low" value="0" disabled />
+          <input
+            type="radio"
+            name="details-priority"
+            id="details-low"
+            value="0"
+            disabled
+          />
           <label for="details-low" id="low-priority-label">Low</label>
         </div>
         <div>
-          <input type="radio" name="details-priority" id="details-medium" value="1" disabled/>
+          <input
+            type="radio"
+            name="details-priority"
+            id="details-medium"
+            value="1"
+            disabled
+          />
           <label for="details-medium" id="medium-priority-label">Medium</label>
         </div>
         <div>
-          <input type="radio" name="details-priority" id="details-high" value="2" disabled />
+          <input
+            type="radio"
+            name="details-priority"
+            id="details-high"
+            value="2"
+            disabled
+          />
           <label for="details-high" id="high-priority-label">High</label>
         </div>
       </div>
